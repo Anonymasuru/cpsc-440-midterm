@@ -86,8 +86,7 @@ def full_adder(a, b, carry_in):
 
     return sum2, carry_out
 
-#Addition
-def ADD(a, b):
+def ADD(rs1, rs2):
 
     # Initialize result as 32 zeros
     result = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -99,95 +98,97 @@ def ADD(a, b):
     # Repeat addition logic 32 times
     # -----------------------------
 
-    sum_bit, carry = full_adder(a[31], b[31], carry) # B0 (LSB)
+    sum_bit, carry = full_adder(rs1[31], rs2[31], carry) # B0 (LSB)
     result[31] = sum_bit
-    sum_bit, carry = full_adder(a[30], b[30], carry)
+    sum_bit, carry = full_adder(rs1[30], rs2[30], carry)
     result[30] = sum_bit
-    sum_bit, carry = full_adder(a[29], b[29], carry)
+    sum_bit, carry = full_adder(rs1[29], rs2[29], carry)
     result[29] = sum_bit
-    sum_bit, carry = full_adder(a[28], b[28], carry)
+    sum_bit, carry = full_adder(rs1[28], rs2[28], carry)
     result[28] = sum_bit
-    sum_bit, carry = full_adder(a[27], b[27], carry)
+    sum_bit, carry = full_adder(rs1[27], rs2[27], carry)
     result[27] = sum_bit
-    sum_bit, carry = full_adder(a[26], b[26], carry)
+    sum_bit, carry = full_adder(rs1[26], rs2[26], carry)
     result[26] = sum_bit
-    sum_bit, carry = full_adder(a[25], b[25], carry)
+    sum_bit, carry = full_adder(rs1[25], rs2[25], carry)
     result[25] = sum_bit
-    sum_bit, carry = full_adder(a[24], b[24], carry)
+    sum_bit, carry = full_adder(rs1[24], rs2[24], carry)
     result[24] = sum_bit
-    sum_bit, carry = full_adder(a[23], b[23], carry)
+    sum_bit, carry = full_adder(rs1[23], rs2[23], carry)
     result[23] = sum_bit
-    sum_bit, carry = full_adder(a[22], b[22], carry)
+    sum_bit, carry = full_adder(rs1[22], rs2[22], carry)
     result[22] = sum_bit
-    sum_bit, carry = full_adder(a[21], b[21], carry)
+    sum_bit, carry = full_adder(rs1[21], rs2[21], carry)
     result[21] = sum_bit
-    sum_bit, carry = full_adder(a[20], b[20], carry)
+    sum_bit, carry = full_adder(rs1[20], rs2[20], carry)
     result[20] = sum_bit
-    sum_bit, carry = full_adder(a[19], b[19], carry)
+    sum_bit, carry = full_adder(rs1[19], rs2[19], carry)
     result[19] = sum_bit
-    sum_bit, carry = full_adder(a[18], b[18], carry)
+    sum_bit, carry = full_adder(rs1[18], rs2[18], carry)
     result[18] = sum_bit
-    sum_bit, carry = full_adder(a[17], b[17], carry)
+    sum_bit, carry = full_adder(rs1[17], rs2[17], carry)
     result[17] = sum_bit
-    sum_bit, carry = full_adder(a[16], b[16], carry)
+    sum_bit, carry = full_adder(rs1[16], rs2[16], carry)
     result[16] = sum_bit
-    sum_bit, carry = full_adder(a[15], b[15], carry)
+    sum_bit, carry = full_adder(rs1[15], rs2[15], carry)
     result[15] = sum_bit
-    sum_bit, carry = full_adder(a[14], b[14], carry)
+    sum_bit, carry = full_adder(rs1[14], rs2[14], carry)
     result[14] = sum_bit
-    sum_bit, carry = full_adder(a[13], b[13], carry)
+    sum_bit, carry = full_adder(rs1[13], rs2[13], carry)
     result[13] = sum_bit
-    sum_bit, carry = full_adder(a[12], b[12], carry)
+    sum_bit, carry = full_adder(rs1[12], rs2[12], carry)
     result[12] = sum_bit
-    sum_bit, carry = full_adder(a[11], b[11], carry)
+    sum_bit, carry = full_adder(rs1[11], rs2[11], carry)
     result[11] = sum_bit
-    sum_bit, carry = full_adder(a[10], b[10], carry)
+    sum_bit, carry = full_adder(rs1[10], rs2[10], carry)
     result[10] = sum_bit
-    sum_bit, carry = full_adder(a[9], b[9], carry)
+    sum_bit, carry = full_adder(rs1[9], rs2[9], carry)
     result[9] = sum_bit
-    sum_bit, carry = full_adder(a[8], b[8], carry)
+    sum_bit, carry = full_adder(rs1[8], rs2[8], carry)
     result[8] = sum_bit
-    sum_bit, carry = full_adder(a[7], b[7], carry)
+    sum_bit, carry = full_adder(rs1[7], rs2[7], carry)
     result[7] = sum_bit
-    sum_bit, carry = full_adder(a[6], b[6], carry)
+    sum_bit, carry = full_adder(rs1[6], rs2[6], carry)
     result[6] = sum_bit
-    sum_bit, carry = full_adder(a[5], b[5], carry)
+    sum_bit, carry = full_adder(rs1[5], rs2[5], carry)
     result[5] = sum_bit
-    sum_bit, carry = full_adder(a[4], b[4], carry)
+    sum_bit, carry = full_adder(rs1[4], rs2[4], carry)
     result[4] = sum_bit
-    sum_bit, carry = full_adder(a[3], b[3], carry)
+    sum_bit, carry = full_adder(rs1[3], rs2[3], carry)
     result[3] = sum_bit
-    sum_bit, carry = full_adder(a[2], b[2], carry)
+    sum_bit, carry = full_adder(rs1[2], rs2[2], carry)
     result[2] = sum_bit
-    sum_bit, carry = full_adder(a[1], b[1], carry)
+    sum_bit, carry = full_adder(rs1[1], rs2[1], carry)
     result[1] = sum_bit
-    sum_bit, carry = full_adder(a[0], b[0], carry) # B31 (MSB)
+    sum_bit, carry = full_adder(rs1[0], rs2[0], carry) # B31 (MSB)
     result[0] = sum_bit
 
     # Flag checks
     N = result[0] # Negative flag
     Z = 1 if all(bit == 0 for bit in result) else 0  # Zero flag
     C = carry                              # Carry out of MSB
-    V = 1 if (a[0] == b[0]) and (result[0] != a[0]) else 0 # Signed overflow
+    V = 1 if (rs1[0] == rs2[0]) and (result[0] != rs1[0]) else 0 # Signed overflow
     
     return result, {"N": N, "Z": Z, "C": C, "V": V}
 
-#Subtraction
-def SUB(a, b):
-    neg_b = twos_complement(b)
-    result, flags = ADD(a, neg_b)
+
+def SUB(rs1, rs2):
+    neg_rs2 = twos_complement(rs2)
+    result, flags = ADD(rs1, neg_rs2)
     flags['C'] = 1 - flags['C']
-    flags['V'] = 1 if (a[0] != b[0]) and (result[0] != a[0]) else 0
+    flags['V'] = 1 if (rs1[0] != rs2[0]) and (result[0] != rs1[0]) else 0
     return result, flags
 
 # test cases
 a = [0]*28 + [0,1,0,1]  # 5 in 32-bit
 b = [0]*28 + [0,1,1,0]  # 6 in 32-bit
 sum_result, sum_flags = ADD(a, b)
-print("Addition test")
+print("\nAddition test")
 print(bits_to_str(a), "+", bits_to_str(b), "->", bits_to_str(sum_result), ";", sum_flags)
 sum_result, sum_flags = SUB(a, b)
 print("\nSubtraction test")
 print(bits_to_str(a), "-", bits_to_str(b), "->", bits_to_str(sum_result), ";", sum_flags)
 # sum_result now contains 11 in 32-bit binary
 # carry indicates overflow (1 if sum > 32 bits)
+
+# I think these need to be done as rs1 and rs2 instead of a and b
