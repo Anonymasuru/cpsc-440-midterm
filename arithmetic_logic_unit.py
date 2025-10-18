@@ -44,7 +44,7 @@ def bitwise_not(a):
 
 def twos_complement(a):
     inverted = bitwise_not(a)
-    one = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]
+    one = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]
     result, _ = add_bitvectors(inverted, one)
     return result
 
@@ -85,7 +85,7 @@ def full_adder(a, b, carry_in):
 #Addition
 def add_bitvectors(a, b):
     # Initialize result as 32 zeros
-    result = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    result = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     
     # Initialize carry
     carry = 0
@@ -199,7 +199,7 @@ def sub_bitvectors(a, b):
     b_neg = twos_complement(b)
     
     # Initialize result
-    result = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    result = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     carry = 0
 
     # Bit 0 (LSB)
@@ -300,3 +300,18 @@ def sub_bitvectors(a, b):
     result[0] = sum_bit
 
     return result, carry
+
+# test cases
+a = [0]*28 + [0,1,0,1]  # 5 in 32-bit
+b = [0]*28 + [0,1,1,0]  # 6 in 32-bit
+
+print("bitvectors testa and testb are:")
+print(a)
+print(b)
+
+sum_result, carry = add_bitvectors(a, b)
+
+print("The result is:")
+print(sum_result)
+# sum_result now contains 11 in 32-bit binary
+# carry indicates overflow (1 if sum > 32 bits)
