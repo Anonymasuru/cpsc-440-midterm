@@ -1,32 +1,9 @@
+import arithmetic_logic_unit
+
 XLEN = 32
 
 HEX_DIGITS = ['0', '1', '2', '3', '4', '5', '6', '7',
               '8', '9', 'A', 'B', 'C', 'D', 'E', 'F']
-
-def half_adder(a, b):
-    sum_bit = (a != b)  # XOR
-    carry = a and b      # AND
-    return sum_bit, carry
-
-def full_adder(a, b, carry_in):
-    sum1, carry1 = half_adder(a, b)
-    sum2, carry2 = half_adder(sum1, carry_in)
-    carry_out = carry1 or carry2
-    return sum2, carry_out
-
-def add_bitvectors(a_bits, b_bits):
-    result = [0]*XLEN
-    carry = 0
-    for i in reversed(range(XLEN)):
-        result[i], carry = full_adder(a_bits[i], b_bits[i], carry)
-    return result, carry
-
-def twos_complement(bits):
-    # Invert all bits
-    inverted = [1 - b for b in bits]
-    # Add 1
-    one = [0]*(XLEN-1) + [1]
-    return add_bitvectors(inverted, one)[0]
 
 def int_to_bitvector(value):
     bits = [0]*XLEN

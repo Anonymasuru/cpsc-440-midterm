@@ -34,13 +34,17 @@ def twos_complement(a):
     inverted = []
     for bit in a:
         inverted.append(NOT(bit))
-    one = [0 for _ in range(31)] + [1]
+    one = init_bitvector()
+    one[-1] = 1
     result, _ = ADD(inverted, one)
     return result
 
 def bits_to_str(bits):
     return ''.join(str(b) for b in bits)
 
+def init_bitvector():
+    bitvector = [0 for _ in range(32)] 
+    return bitvector
 
 #======
 #ADDERS
@@ -61,9 +65,35 @@ def full_adder(a, b, carry_in):
     carry_out = OR(carry1, carry2)
     return sum2, carry_out
 
+#========
+#SHIFTERS
+#========
+
+def SLL(bits, amount):
+    width = len(bits)
+    
+    # 1. Slice off the leftmost `amount` bits
+    shifted_part = bits[amount:]  # bits that remain after shift
+    
+    # 2. Build zeros to fill the right
+    zeros = init_bitvector()
+    
+    # 3. Concatenate
+    result = shifted_part + zeros
+    
+    # 4. Ensure result is same width (optional)
+    if len(result) > width:
+        result = result[:width]
+    
+    return result
+
+#==============
+#BITVECTOR MATH
+#==============
+
 def ADD(rs1, rs2):
     # Initialize result as 32 zeros
-    result = [0 for _ in range(32)] 
+    result = init_bitvector()
     # Initialize carry
     carry = 0
     for i in range(31, -1, -1):
