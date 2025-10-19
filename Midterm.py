@@ -1,5 +1,7 @@
 XLEN = 32
 
+
+
 def encoded_twos_complement(value: int):
     max = 2**(XLEN - 1) - 1 # Highest numeric limit. one must be rmeoved because its the sign indicator (leading zero)
     min = -2**(XLEN - 1) # Lowest numberic limit. not required because the negative sign indicator itself is a viable value
