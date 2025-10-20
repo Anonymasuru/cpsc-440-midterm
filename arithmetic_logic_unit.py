@@ -71,6 +71,7 @@ def SRA(rs1, n):
     for i in range(n, length):
         shifted[i] = rs1[i - n]
     return shifted
+
 def init_bitvector():
     bitvector = [0 for _ in range(32)] 
     return bitvector
