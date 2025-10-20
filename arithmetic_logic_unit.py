@@ -34,7 +34,8 @@ def twos_complement(a):
     inverted = []
     for bit in a:
         inverted.append(NOT(bit))
-    one = [0 for _ in range(31)] + [1]
+    one = init_bitvector()
+    one[-1] = 1
     result, _ = ADD(inverted, one)
     return result
 
@@ -70,6 +71,9 @@ def SRA(rs1, n):
     for i in range(n, length):
         shifted[i] = rs1[i - n]
     return shifted
+def init_bitvector():
+    bitvector = [0 for _ in range(32)] 
+    return bitvector
 
 #======
 #ADDERS
@@ -90,9 +94,13 @@ def full_adder(a, b, carry_in):
     carry_out = OR(carry1, carry2)
     return sum2, carry_out
 
+#==============
+#BITVECTOR MATH
+#==============
+
 def ADD(rs1, rs2):
     # Initialize result as 32 zeros
-    result = [0 for _ in range(32)] 
+    result = init_bitvector()
     # Initialize carry
     carry = 0
     for i in range(31, -1, -1):
