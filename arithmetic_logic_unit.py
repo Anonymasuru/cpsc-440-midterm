@@ -1,5 +1,5 @@
 # We're going to need to build this from the ground up.
-
+XLEN = 32
 # These operators appear to go through the entire array and produce results based on their logic criteria
 
 # if both inputs are on
@@ -77,7 +77,7 @@ def SRA(rs1, n):
     return shifted
 
 def init_bitvector():
-    bitvector = [0 for _ in range(32)] 
+    bitvector = [0 for _ in range(XLEN)] 
     return bitvector
 
 #======
@@ -104,11 +104,9 @@ def full_adder(a, b, carry_in):
 #==============
 
 def ADD(rs1, rs2):
-    # Initialize result as 32 zeros
     result = init_bitvector()
-    # Initialize carry
     carry = 0
-    for i in range(31, -1, -1):
+    for i in range(31, -1, -1): # In the event we ever switch off of 32bit, this needs to be adjusted.
         sum_bit, carry = full_adder(rs1[i], rs2[i], carry)
         result[i] = sum_bit
     # Flag checks
@@ -118,120 +116,80 @@ def ADD(rs1, rs2):
         Z = AND(Z, XOR(bit, 1))               
     C = carry                                                     # Carry out of MSB
     V = AND(NOT(XOR(rs1[0], rs2[0])), XOR(result[0], rs1[0]))     # Overflow flag
-    return result, {"N": N, "Z": Z, "C": C, "V": V}
+    return result[-XLEN:], {"N": N, "Z": Z, "C": C, "V": V}
 
 def SUB(rs1, rs2):
     neg_rs2 = twos_complement(rs2)
     result, flags = ADD(rs1, neg_rs2)
     flags['C'] = XOR(flags['C'], 1)
     flags['V'] = AND(XOR(rs1[0], rs2[0]), XOR(result[0], rs1[0]))
-    return result, flags
+    return result[-XLEN:], flags
 
 #===========
 #MULTIPLIERS
 #===========
 
 def MUL(rs1, rs2):
-    length = len(rs1)
-    result = [0 for _ in range(length)]
-    multiplicand = rs1[:]  # copy of rs1
-    multiplier = rs2[:]    # copy of rs2
+    accumulator = init_bitvector()
+    multiplicand = rs1[:]
+    multiplier = rs2[:]
+    overflow = 0 
+    step = 0 # MUL tracing requirement
 
-    for _ in range(length):
-        # If the least significant bit of multiplier is 1, add multiplicand
+    for _ in range(XLEN):
         if multiplier[-1] == 1:
-            result, _ = ADD(result, multiplicand)
-        # Shift multiplicand left, multiplier right
-        multiplicand = SLL(multiplicand)
-        multiplier = SRL(multiplier, 1)
-    return result
+            print("  -> LSB = 1, adding multiplicand to accumulator")
+            accumulator, flags = ADD(accumulator, multiplicand)
+            if flags["C"] == 1:   # carry-out from ADD MSB
+                overflow = 1
+        else:
+            print("  -> LSB = 0, skipping addition")
 
-def MUL_signed(rs1, rs2):
-    length = len(rs1)
-    sign1 = rs1[0]
-    sign2 = rs2[0]
+        # Before shifting multiplicand, check if MSB will be lost
+        if multiplicand[0] == 1:
+            overflow = 1
 
-    # Step 1: make copies
-    a = rs1[:]
-    b = rs2[:]
-
-    # Step 2: take two’s complement if negative
-    if sign1 == 1:
-        a = twos_complement(a)
-    if sign2 == 1:
-        b = twos_complement(b)
-
-    # Step 3: perform unsigned multiplication
-    result = [0 for _ in range(length)]
-    multiplicand = a[:]
-    multiplier = b[:]
-    for _ in range(length):
-        if multiplier[-1] == 1:
-            result, _ = ADD(result, multiplicand)
-        multiplicand = SLL(multiplicand)
+        multiplicand = SLL(multiplicand, 1)
         multiplier = SRL(multiplier, 1)
 
-    # Step 4: adjust sign if needed (negative result)
-    if sign1 != sign2:
-        result = twos_complement(result)
+        #trace code here
+        print("Step:", step)
+        print("  Accumulator:", bits_to_str(accumulator))
+        print("  Multiplier: ", bits_to_str(multiplier))
+        print("  Multiplicand:", bits_to_str(multiplicand))
 
-    return result
+        step = step + 1 # illegal but strictly for tracing, not necessary otherwise
 
-def DIV_signed(dividend, divisor):
-    length = len(dividend)
-    sign_dividend = dividend[0]
-    sign_divisor = divisor[0]
+    return accumulator[-XLEN:], {"overflow": overflow}
 
-    # Step 1: take absolute values
-    a = dividend[:]
-    b = divisor[:]
-    if sign_dividend == 1:
-        a = twos_complement(a)
-    if sign_divisor == 1:
-        b = twos_complement(b)
-
-    # Step 2: perform unsigned division
-    quotient, remainder = DIV_unsigned(a, b)
-
-    # Step 3: adjust quotient sign
-    if sign_dividend != sign_divisor:
-        quotient = twos_complement(quotient)
-
-    # Step 4: adjust remainder sign
-    if sign_dividend == 1:
-        remainder = twos_complement(remainder)
-
-    return quotient, remainder
-
-def DIV_unsigned(dividend, divisor):
-    length = len(dividend)
-    quotient = [0 for _ in range(length)]
-    remainder = [0 for _ in range(length)]
-
-    for i in range(length):
-        # Shift left remainder and bring down next bit of dividend
+def DIV(rs1, rs2):
+    # Signed 32-bit division: returns quotient.
+    # Can't divide by 0, return -1
+    if rs2 == [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]:
+        return [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+    neg_dividend = 1 if rs1[0] == 1 else 0
+    neg_divisor = 1 if rs2[0] == 1 else 0
+    # Step 2: Take absolute values
+    dividend = twos_complement(rs1) if neg_dividend else rs1[:]
+    divisor = twos_complement(rs2) if neg_divisor else rs2[:]
+    # init quotient and remainder
+    quotient = init_bitvector()
+    remainder = init_bitvector()
+    for i in range(XLEN):
+        # Shift remainder left, bring in next dividend bit
         remainder = SLL(remainder, 1)
         remainder[-1] = dividend[i]
+        # Compare remainder >= divisor
+        if remainder >= divisor:
+            remainder, _ = SUB(remainder, divisor)
+            quotient[i] = 1
 
-        # If remainder >= divisor, subtract divisor and set quotient bit
-        temp_remainder, _ = SUB(remainder, divisor)
-        if temp_remainder[0] == 0:  # No negative result
-            remainder = temp_remainder
-            quotient[i] = 1 
+    # Step 4: Apply quotient sign
+    if XOR(neg_dividend,neg_divisor) == 1:
+        quotient = twos_complement(quotient)
 
-    return quotient, remainder
+    # Step 5: Apply remainder sign (same as dividend)
+    if neg_dividend:
+        remainder = twos_complement(remainder)
 
-
-# test cases
-a = [0]*28 + [0,1,0,1]  # 5 in 32-bit
-b = [0]*28 + [0,1,1,0]  # 6 in 32-bit
-sum_result, sum_flags = ADD(a, b)
-print("\nAddition test")
-print(bits_to_str(a), "+", bits_to_str(b), "->", bits_to_str(sum_result), ";", sum_flags)
-sum_result, sum_flags = SUB(a, b)
-print("\nSubtraction test")
-print(bits_to_str(a), "-", bits_to_str(b), "->", bits_to_str(sum_result), ";", sum_flags)
-# sum_result now contains 11 in 32-bit binary
-# carry indicates overflow (1 if sum > 32 bits)
-
-# I think these need to be done as rs1 and rs2 instead of a and b
+    return quotient

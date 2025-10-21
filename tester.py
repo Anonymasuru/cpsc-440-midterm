@@ -28,7 +28,7 @@ def test_NOT():
 #     assert alu.twos_complement([1,1,1,1]) == [0,0,0,1]
 #     assert alu.twos_complement([0,1,0,1]) == [1,1,1,1]
 
-def run_shift_tests_32():
+def test_shift():
     bv_pos = [0]*24 + [0,1,0,1,1,0,0,1]
     bv_neg = [1] + [0]*23 + [0,1,1,0,0,1,0]
 
@@ -62,6 +62,23 @@ def run_shift_tests_32():
 
     print("All 32-bit shift tests passed!")
 
+def test_ALU():
+    # test cases
+    a = [0]*28 + [0,1,0,1]  # 5 in 32-bit
+    b = [0]*28 + [0,1,1,0]  # 6 in 32-bit
+    print("\nAddition test")
+    sum_result, sum_flags = alu.ADD(a, b)
+    print(alu.bits_to_str(a), "+", alu.bits_to_str(b), "->", alu.bits_to_str(sum_result), ";", sum_flags)
+    print("\nSubtraction test")
+    sum_result, sum_flags = alu.SUB(a, b)
+    print(alu.bits_to_str(a), "-", alu.bits_to_str(b), "->", alu.bits_to_str(sum_result), ";", sum_flags)
+    print("\nMUL test")
+    sum_result, sum_flags = alu.MUL(a, b)
+    print(alu.bits_to_str(a), "*", alu.bits_to_str(b), "->", alu.bits_to_str(sum_result), ";", sum_flags)
+
+    # sum_result now contains 11 in 32-bit binary
+    # carry indicates overflow (1 if sum > 32 bits)
+
 def run_tests():
     print("\nLogical operator test")
     test_AND()
@@ -69,7 +86,8 @@ def run_tests():
     test_XOR()
     test_NOT()
     print("All logical operator tests passed")
-    run_shift_tests_32()
+    test_ALU()
+    test_shift()
     # test_twos_complement()
     # test_bits_to_str()
     # test_SLL()
