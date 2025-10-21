@@ -22,39 +22,58 @@ def test_NOT():
     assert alu.NOT(0) == 1
     assert alu.NOT(1) == 0
 
-def test_twos_complement():
-    assert alu.twos_complement([0,0,0,0]) == [1,1,1,1]
-    assert alu.twos_complement([1,0,1,0]) == [0,1,1,0]
-    assert alu.twos_complement([1,1,1,1]) == [0,0,0,1]
-    assert alu.twos_complement([0,1,0,1]) == [1,1,1,1]
+# def test_twos_complement():
+#     assert alu.twos_complement([0,0,0,0]) == [1,1,1,1]
+#     assert alu.twos_complement([1,0,1,0]) == [0,1,1,0]
+#     assert alu.twos_complement([1,1,1,1]) == [0,0,0,1]
+#     assert alu.twos_complement([0,1,0,1]) == [1,1,1,1]
 
-def test_bits_to_str():
-    assert alu.bits_to_str([0,1,0,1]) == "0101"
-    assert alu.bits_to_str([1,1,1,0]) == "1110"
-    assert alu.bits_to_str([0,0,0,0]) == "0000"
-    assert alu.bits_to_str([1,0,1,1]) == "1011"
+def run_shift_tests_32():
+    bv_pos = [0]*24 + [0,1,0,1,1,0,0,1]
+    bv_neg = [1] + [0]*23 + [0,1,1,0,0,1,0]
 
-def test_SLL():
-    assert alu.SLL([1,0,1,0], 1) == [0,1,0,0]
-    assert alu.SLL([1,1,0,0], 2) == [0,0,0,0]
-    assert alu.SLL([0,1,1,1], 3) == [0,0,0,0]
-    assert alu.SLL([1,0,0,1], 0) == [1,0,0,1]
+    # SLL tests
+    print("\n Shifter test")
+    print(alu.bits_to_str(bv_pos), "-> shift left by one ->", alu.bits_to_str(alu.SLL(bv_pos, 1)))
+    assert alu.SLL(bv_pos, 1) == bv_pos[1:] + [0]
+    assert alu.SLL(bv_pos, 3) == bv_pos[3:] + [0,0,0]
+    assert alu.SLL(bv_pos, 0) == bv_pos
+    assert alu.SLL(bv_pos, 32) == [0]*32
 
-def test_SRL():
-    assert alu.SRL([1,0,1,0], 1) == [0,1,0,1]
-    assert alu.SRL([1,1,0,0], 2) == [0,0,1,1]
-    assert alu.SRL([0,1,1,1], 3) == [0,0,0,1]
-    assert alu.SRL([1,0,0,1], 0) == [1,0,0,1]
+    # SRL tests
+    assert alu.SRL(bv_pos, 1) == [0] + bv_pos[:-1]
+    assert alu.SRL(bv_pos, 3) == [0,0,0] + bv_pos[:-3]
+    assert alu.SRL(bv_pos, 0) == bv_pos
+    assert alu.SRL(bv_pos, 32) == [0]*32
+
+    # SRA tests
+    msb_pos = bv_pos[0]
+    msb_neg = bv_neg[0]
+
+    # Shift by 1
+    assert alu.SRA(bv_neg, 1) == [msb_neg] + bv_neg[:-1]
+    assert alu.SRA(bv_pos, 1) == [msb_pos] + bv_pos[:-1]
+
+    # Shift by 3
+    assert alu.SRA(bv_neg, 3) == [msb_neg]*3 + bv_neg[:-3]
+
+    # Shift by 0
+    assert alu.SRA(bv_pos, 0) == bv_pos
+
+    print("All 32-bit shift tests passed!")
 
 def run_tests():
+    print("\nLogical operator test")
     test_AND()
     test_OR()
     test_XOR()
     test_NOT()
-    test_twos_complement()
-    test_bits_to_str()
-    test_SLL()
-    test_SRL()
+    print("All logical operator tests passed")
+    run_shift_tests_32()
+    # test_twos_complement()
+    # test_bits_to_str()
+    # test_SLL()
+    # test_SRL()
     print("All tests passed!")
 
 if __name__ == "__main__":

@@ -46,30 +46,34 @@ def bits_to_str(bits):
 #SHIFTERS
 #========
 
-def SLL(rs1, n):    
-    length = len(rs1)
-    shifted = [0 for _ in range(length)]
-    for i in range(length - n):
-        shifted[i] = rs1[i + n]
+def SLL(rs1, n):
+    # Copy the input to avoid modifying it directly
+    shifted = rs1[:]
+
+    # Perform the shift 'n' times
+    for _ in range(n):
+        shifted.pop(0)      # Remove the most significant bit (MSB)
+        shifted.append(0)   # Add a zero at the least significant bit (LSB)
+    
     return shifted
 
 def SRL(rs1, n):
-    length = len(rs1)
-    if n >= length:
-        return [0 for _ in range(length)]
-    shifted = [0 for _ in range(length)]
-    for i in range(n, length):
-        shifted[i] = rs1[i - n]
+    shifted = rs1[:]  # copy to avoid mutating original
+
+    for _ in range(n):
+        shifted.pop()       # remove the rightmost bit (LSB)
+        shifted.insert(0, 0)  # insert 0 at the left (MSB)
+
     return shifted
 
 def SRA(rs1, n):
-    length = len(rs1)
-    sign_bit = rs1[0]
-    if n >= length:
-        return [sign_bit for _ in range(length)]
-    shifted = [sign_bit for _ in range(length)]
-    for i in range(n, length):
-        shifted[i] = rs1[i - n]
+    shifted = rs1[:]  # copy to avoid mutating original
+    msb = rs1[0]      # store the original sign bit
+
+    for _ in range(n):
+        shifted.pop()         # remove LSB
+        shifted.insert(0, msb)  # insert MSB (sign bit) at left
+
     return shifted
 
 def init_bitvector():
@@ -217,15 +221,16 @@ def DIV_unsigned(dividend, divisor):
 
     return quotient, remainder
 
+
 # test cases
-# a = [0]*28 + [0,1,0,1]  # 5 in 32-bit
-# b = [0]*28 + [0,1,1,0]  # 6 in 32-bit
-# sum_result, sum_flags = ADD(a, b)
-# print("\nAddition test")
-# print(bits_to_str(a), "+", bits_to_str(b), "->", bits_to_str(sum_result), ";", sum_flags)
-# sum_result, sum_flags = SUB(a, b)
-# print("\nSubtraction test")
-# print(bits_to_str(a), "-", bits_to_str(b), "->", bits_to_str(sum_result), ";", sum_flags)
+a = [0]*28 + [0,1,0,1]  # 5 in 32-bit
+b = [0]*28 + [0,1,1,0]  # 6 in 32-bit
+sum_result, sum_flags = ADD(a, b)
+print("\nAddition test")
+print(bits_to_str(a), "+", bits_to_str(b), "->", bits_to_str(sum_result), ";", sum_flags)
+sum_result, sum_flags = SUB(a, b)
+print("\nSubtraction test")
+print(bits_to_str(a), "-", bits_to_str(b), "->", bits_to_str(sum_result), ";", sum_flags)
 # sum_result now contains 11 in 32-bit binary
 # carry indicates overflow (1 if sum > 32 bits)
 
