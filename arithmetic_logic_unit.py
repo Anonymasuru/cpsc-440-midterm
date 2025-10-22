@@ -40,7 +40,14 @@ def twos_complement(a):
     return result
 
 def bits_to_str(bits):
-    return ''.join(str(b) for b in bits)
+    XLEN = len(bits)
+    chunks = [''.join(str(bits[i:i+8][j]) for j in range(8)) for i in range(0, XLEN, 8)]
+    return '_'.join(chunks)
+
+def str_to_bits(bitstr):
+    # Remove underscores and convert each character to int
+    return [int(c) for c in bitstr.replace('_', '')]
+
 
 #========
 #SHIFTERS
@@ -189,7 +196,10 @@ def DIV(rs1, rs2):
         quotient = twos_complement(quotient)
 
     # Step 5: Apply remainder sign (same as dividend)
-    if neg_dividend:
+    if neg_dividend == 1:
         remainder = twos_complement(remainder)
 
-    return quotient
+    remainder_flag = remainder[-1]
+
+    return quotient, remainder_flag
+

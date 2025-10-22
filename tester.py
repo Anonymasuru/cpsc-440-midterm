@@ -22,11 +22,12 @@ def test_NOT():
     assert alu.NOT(0) == 1
     assert alu.NOT(1) == 0
 
-# def test_twos_complement():
-#     assert alu.twos_complement([0,0,0,0]) == [1,1,1,1]
-#     assert alu.twos_complement([1,0,1,0]) == [0,1,1,0]
-#     assert alu.twos_complement([1,1,1,1]) == [0,0,0,1]
-#     assert alu.twos_complement([0,1,0,1]) == [1,1,1,1]
+def test_twos_complement():
+    assert alu.twos_complement([0]*32) == [1]*32
+    assert alu.twos_complement([1,0,1,0] + [0]*28) == [0,1,1,0] + [1]*28
+    assert alu.twos_complement([1]*32) == [0]*31 + [1]
+    assert alu.twos_complement([0,1,0,1] + [0]*28) == [1,1,1,1] + [1]*28
+
 
 def test_shift():
     bv_pos = [0]*24 + [0,1,0,1,1,0,0,1]
@@ -75,6 +76,9 @@ def test_ALU():
     print("\nMUL test")
     sum_result, sum_flags = alu.MUL(a, b)
     print(alu.bits_to_str(a), "*", alu.bits_to_str(b), "->", alu.bits_to_str(sum_result), ";", sum_flags)
+    print("\nDIV test")
+    sum_result, sum_flags = alu.DIV(b, a)
+    print(alu.bits_to_str(b), "/", alu.bits_to_str(a), "->", alu.bits_to_str(sum_result), ";", sum_flags)
 
     # sum_result now contains 11 in 32-bit binary
     # carry indicates overflow (1 if sum > 32 bits)
