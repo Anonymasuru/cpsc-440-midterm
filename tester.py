@@ -1,4 +1,5 @@
 import arithmetic_logic_unit as alu
+import encoder_decoder_module as code_mod
 
 def test_AND():
     assert alu.AND(0, 0) == 0
@@ -23,11 +24,10 @@ def test_NOT():
     assert alu.NOT(1) == 0
 
 def test_twos_complement():
-    assert alu.twos_complement([0]*32) == [1]*32
-    assert alu.twos_complement([1,0,1,0] + [0]*28) == [0,1,1,0] + [1]*28
+    assert alu.twos_complement([0]*31+[1]) == [1]*32
+    assert alu.twos_complement([1,0,1,0] + [0]*28) == [0,1,1,0] + [0]*28
     assert alu.twos_complement([1]*32) == [0]*31 + [1]
-    assert alu.twos_complement([0,1,0,1] + [0]*28) == [1,1,1,1] + [1]*28
-
+    assert alu.twos_complement([0,1,0,1] + [0]*28) == [1,0,1,1] + [0]*28
 
 def test_shift():
     bv_pos = [0]*24 + [0,1,0,1,1,0,0,1]
@@ -83,6 +83,16 @@ def test_ALU():
     # sum_result now contains 11 in 32-bit binary
     # carry indicates overflow (1 if sum > 32 bits)
 
+def test_code_mod():
+    print("Testing 'encoded_twos_complement' with 13 and -13...\n")
+    print(code_mod.encoded_twos_complement(13))
+    print(code_mod.encoded_twos_complement(-13))
+    print(code_mod.encoded_twos_complement(2**31)) # Overflow test
+
+    print("\nTesting 'decoded_twos_complement'...\n")
+    print(code_mod.decoded_twos_complement("00000000000000000000000000001101"))
+    print(code_mod.decoded_twos_complement("11111111111111111111111111110011"))
+
 def run_tests():
     print("\nLogical operator test")
     test_AND()
@@ -92,10 +102,8 @@ def run_tests():
     print("All logical operator tests passed")
     test_ALU()
     test_shift()
-    # test_twos_complement()
-    # test_bits_to_str()
-    # test_SLL()
-    # test_SRL()
+    test_twos_complement()
+    test_code_mod()
     print("All tests passed!")
 
 if __name__ == "__main__":

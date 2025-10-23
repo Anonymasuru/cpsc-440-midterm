@@ -29,7 +29,6 @@ def encoded_twos_complement(value: int):
             overflow = 1
             break
 
-
     # Step 5: Trim down to XLEN bits
     bits = bits[-XLEN:]
 
@@ -78,14 +77,3 @@ def decoded_twos_complement(value):
         result = -result
 
     return result
-
-
-print("Testing 'encoded_twos_complement' with 13 and -13...\n")
-print(encoded_twos_complement(13))
-print(encoded_twos_complement(-13))
-print(encoded_twos_complement(2**31)) # Overflow test
-
-print("\nTesting 'decoded_twos_complement'...\n")
-print(decoded_twos_complement("00000000000000000000000000001101"))
-print(decoded_twos_complement("11111111111111111111111111110011"))
-# print(decoded_twos_complement("LOL"))
