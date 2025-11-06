@@ -40,7 +40,7 @@ def twos_complement(a):
 
 def bits_to_str(bits):
     XLEN = len(bits)
-    chunks = [''.join(str(bits[i:i+8][j]) for j in range(8)) for i in range(0, XLEN, 8)]
+    chunks = [''.join(str(b) for b in bits[i:i+8]) for i in range(0, XLEN, 8)]
     return '_'.join(chunks)
 
 def str_to_bits(bitstr):
